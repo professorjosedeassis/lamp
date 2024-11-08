@@ -7,6 +7,10 @@
 let chave = false // o interruptor inicia desligado
 let lampada = true // a lâmpada está OK
 
+// lanterna (pré carregamento)
+let stream, track  //lanterna
+inicializarLanterna()
+
 // pré carregamento do áudio para sincronizar com atroca de imagem
 let som = new Audio("sound/glassbreaking.wav") // 1 arquivo só pode ser simplificado desta forma
 som.volume = 1 // 0 - 0% 1 - 100%
@@ -99,7 +103,8 @@ botao.addEventListener('touchend', () => {
 
 // Lanterna
 
-async function ligar() {
+// Inicializa o stream e configura o track apenas uma vez
+async function inicializarLanterna() {
     try {
         // Solicita acesso à câmera traseira sem exibir o vídeo
         stream = await navigator.mediaDevices.getUserMedia({
@@ -109,24 +114,35 @@ async function ligar() {
         // Obtém o track do vídeo para controlar a lanterna
         track = stream.getVideoTracks()[0]
         
-        // Verifica se o dispositivo suporta a lanterna
-        const capabilities = track.getCapabilities()
-        if (capabilities.torch) {
-            // Liga a lanterna
-            await track.applyConstraints({ advanced: [{ torch: true }] });
-        } else {
-            console.log("Lanterna não é suportada no dispositivo.")
+        // Verifica se o dispositivo suporta o uso da lanterna
+        const capabilities = track.getCapabilities();
+        if (!capabilities.torch) {
+            console.log("Lanterna não suportada no dispositivo.");
+            return
         }
     } catch (error) {
-        console.error("Erro ao tentar ligar a lanterna:", error)
+        console.error("Erro ao inicializar a lanterna:", error)
     }
 }
 
-function desligar() {
-    // Para o stream e desliga a lanterna sem prompts
+// Função para ligar a lanterna
+async function ligar() {
     if (track) {
-        track.stop()
+        try {
+            await track.applyConstraints({ advanced: [{ torch: true }] })
+        } catch (error) {
+            console.error("Erro ao tentar ligar a lanterna:", error)
+        }
     }
-    stream = null
-    track = null
+}
+
+// Função para desligar a lanterna sem parar o stream
+async function desligar() {
+    if (track) {
+        try {
+            await track.applyConstraints({ advanced: [{ torch: false }] })
+        } catch (error) {
+            console.error("Erro ao tentar desligar a lanterna:", error)
+        }
+    }
 }

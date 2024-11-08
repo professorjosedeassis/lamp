@@ -88,43 +88,45 @@ botao.addEventListener('mouseup', () => {
 // Suporte para touchscreens
 botao.addEventListener('touchstart', () => {
     if (lampada === true && chave === false) {
-        lampadaImg.src = "img/on.jpg"
-        ligarLanterna()
+        lampadaImg.src = "img/on.jpg"        
     }
 })
 botao.addEventListener('touchend', () => {
     if (lampada === true && chave === false) {
-        lampadaImg.src = "img/off.jpg"
-        desligarLanterna()
+        lampadaImg.src = "img/off.jpg"        
     }
 })
 
-async function ligarLanterna() {
+// Lanterna
+
+async function ligar() {
     try {
-        // Solicita o acesso à câmera traseira do dispositivo
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: "environment" } // câmera traseira
+        // Solicita acesso à câmera traseira sem exibir o vídeo
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: "environment" }
         })
         
-        // Obtem o track do vídeo para acessar a lanterna
-        const track = stream.getVideoTracks()[0];
+        // Obtém o track do vídeo para controlar a lanterna
+        track = stream.getVideoTracks()[0]
         
-        // Verifica se o dispositivo suporta o uso do flash da câmera
+        // Verifica se o dispositivo suporta a lanterna
         const capabilities = track.getCapabilities()
         if (capabilities.torch) {
             // Liga a lanterna
-            await track.applyConstraints({ advanced: [{ torch: true }] })
+            await track.applyConstraints({ advanced: [{ torch: true }] });
         } else {
-            console.log("Lanterna não suportada no dispositivo.")
+            console.log("Lanterna não é suportada no dispositivo.")
         }
     } catch (error) {
-        console.error("Erro ao tentar acessar a lanterna:", error)
+        console.error("Erro ao tentar ligar a lanterna:", error)
     }
 }
 
-function desligarLanterna() {
-    // Para os streams e desliga a lanterna
-    if (window.stream) {
-        window.stream.getTracks().forEach(track => track.stop())
+function desligar() {
+    // Para o stream e desliga a lanterna sem prompts
+    if (track) {
+        track.stop()
     }
+    stream = null
+    track = null
 }

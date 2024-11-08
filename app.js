@@ -12,7 +12,7 @@ let stream, track  //lanterna
 inicializarLanterna()
 
 // pré carregamento do áudio para sincronizar com atroca de imagem
-let som = new Audio("sound/glassbreaking.wav") // 1 arquivo só pode ser simplificado desta forma
+let som = new Audio("sound/breaking-glass.mp3") // 1 arquivo só pode ser simplificado desta forma
 som.volume = 1 // 0 - 0% 1 - 100%
 
 function quebrar() {
@@ -76,26 +76,30 @@ const lampadaImg = document.getElementById('lamp');
 //evento mouseup (quando o botão do mouse é solto)
 
 // Acender a lâmpada enquanto o botão estiver pressionado (se ela não estiver quebrada) e se a chave estiver desligada
-botao.addEventListener('mousedown', () => {
+botao.addEventListener('mousedown', (event) => {
+    event.preventDefault()
     if (lampada === true && chave === false) {
         lampadaImg.src = "img/on.jpg"
     }
 })
 
 // Apagar a lâmpada ao soltar o botão (se ela não estiver quebrada) e chave estiver desligada
-botao.addEventListener('mouseup', () => {
+botao.addEventListener('mouseup', (event) => {
+    event.preventDefault()
     if (lampada === true && chave === false) {
         lampadaImg.src = "img/off.jpg"
     }
 })
 
 // Suporte para touchscreens
-botao.addEventListener('touchstart', () => {
+botao.addEventListener('touchstart', (event) => {
+    event.preventDefault()
     if (lampada === true && chave === false) {
         lampadaImg.src = "img/on.jpg"        
     }
 })
-botao.addEventListener('touchend', () => {
+botao.addEventListener('touchend', (event) => {
+    event.preventDefault()
     if (lampada === true && chave === false) {
         lampadaImg.src = "img/off.jpg"        
     }

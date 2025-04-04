@@ -1,5 +1,5 @@
-# lamp
-Simples app PWA para simulação e uso da lanterna do smartphone
+# Lamp
+Simples app PWA para simulação e uso da lanterna do smartphone.
 
 ![](img/lampQR.png)
 
